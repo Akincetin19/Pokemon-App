@@ -21,6 +21,7 @@ protocol HomeViewModelPrivateProtocol {
     func getItemCount<T>(array: [T]) -> Int
     func getItemAtIndex<T>(array: [T], index: Int) -> T
     func handleWithResult<T>(result: Result<T, Error>) -> T?
+    
 }
 final class HomeScreenViewModel {
     
@@ -92,6 +93,7 @@ extension HomeScreenViewModel: HomeViewModelPrivateProtocol {
             }
         }
         group.notify(queue: .main) {
+            self.view?.endProgressHud()
             self.pokemonCollectionView?.reloadTableView()
         }
     }

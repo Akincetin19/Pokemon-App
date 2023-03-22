@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AboutUIView: UIView {
+final class AboutUIView: UIView {
 
     
     var pokemonInfo: PokemonInfo

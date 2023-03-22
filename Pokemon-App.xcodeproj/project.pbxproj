@@ -29,6 +29,7 @@
 		E7A34B1B29C90BF400FE698C /* Pokemon-Species.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A34B1A29C90BF400FE698C /* Pokemon-Species.swift */; };
 		E7A34B1D29C90FDE00FE698C /* ConvertColorFromString.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A34B1C29C90FDE00FE698C /* ConvertColorFromString.swift */; };
 		E7A34B2029C9272100FE698C /* PokemonDetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7A34B1F29C9272100FE698C /* PokemonDetailScreen.swift */; };
+		E7B8F55B29CBB428009CEA84 /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = E7B8F55A29CBB428009CEA84 /* JGProgressHUD */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +63,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7A34B1729C8E61800FE698C /* SVGKitSwift in Frameworks */,
+				E7B8F55B29CBB428009CEA84 /* JGProgressHUD in Frameworks */,
 				E7A34B1529C8E61800FE698C /* SVGKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -204,6 +206,7 @@
 			packageProductDependencies = (
 				E7A34B1429C8E61800FE698C /* SVGKit */,
 				E7A34B1629C8E61800FE698C /* SVGKitSwift */,
+				E7B8F55A29CBB428009CEA84 /* JGProgressHUD */,
 			);
 			productName = "Pokemon-App";
 			productReference = E7A34AE029C8885100FE698C /* Pokemon-App.app */;
@@ -235,6 +238,7 @@
 			mainGroup = E7A34AD729C8885100FE698C;
 			packageReferences = (
 				E7A34B1329C8E61800FE698C /* XCRemoteSwiftPackageReference "SVGKit" */,
+				E7B8F55929CBB428009CEA84 /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
 			);
 			productRefGroup = E7A34AE129C8885100FE698C /* Products */;
 			projectDirPath = "";
@@ -497,6 +501,14 @@
 				minimumVersion = 3.0.0;
 			};
 		};
+		E7B8F55929CBB428009CEA84 /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -509,6 +521,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E7A34B1329C8E61800FE698C /* XCRemoteSwiftPackageReference "SVGKit" */;
 			productName = SVGKitSwift;
+		};
+		E7B8F55A29CBB428009CEA84 /* JGProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E7B8F55929CBB428009CEA84 /* XCRemoteSwiftPackageReference "JGProgressHUD" */;
+			productName = JGProgressHUD;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

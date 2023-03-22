@@ -11,6 +11,6 @@ enum APIURLs {
     
     static func getAllPokemonUrl() -> String {
         
-        return "https://pokeapi.co/api/v2/pokemon?offset=0&limit=30"
+        return "https://pokeapi.co/api/v2/pokemon?offset=0&limit=40"
     }
 }

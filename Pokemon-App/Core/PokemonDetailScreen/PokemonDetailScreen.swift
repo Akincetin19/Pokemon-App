@@ -59,7 +59,7 @@ extension PokemonDetailScreen: PokemonDetailScreenProtocol {
 extension PokemonDetailScreen: PokemonDetail {
     func addAboutView() {
         let aboutView = AboutUIView(pokemonInfo: self.viewModel!.pokemonInfo!)
-        view.addSubview(aboutView)
+        infoView.addSubview(aboutView)
         aboutView.anchor(top: aboutLabel.bottomAnchor, leading: infoView.leadingAnchor, bottom: infoView.bottomAnchor, trailing: infoView.trailingAnchor, padding: .init(top: 16, left: 32, bottom: 0, right: 0))
     }
     func configureNavigationTitle() {
@@ -76,6 +76,11 @@ extension PokemonDetailScreen: PokemonDetail {
         pokemonImage.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: nil, padding: .init(top: 0, left: 100, bottom: 0, right: 0), size: .init(width: 200, height: 320))
         view.addSubview(infoView)
         pokemonImage.layer.zPosition = 1
+        
+       let animator = UIViewPropertyAnimator(duration: 1.0, dampingRatio: 0.5) {
+            self.pokemonImage.frame.origin.y = self.view.frame.height - self.pokemonImage.frame.height
+        }
+        animator.startAnimation()
     }
     
     func addInfoView() {

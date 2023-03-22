@@ -32,8 +32,11 @@ final class PokemonCollectionViewCell: UICollectionViewCell {
     fileprivate func updateCellImageAndLabel(pokemonInfo: PokemonInfo) {
         
         self.PokemonNameLabel.text = pokemonInfo.name?.capitalized
-        let image = pokemonInfo.svgImage?.uiImage
-        image?.withRenderingMode(.alwaysOriginal)
+        guard let image = pokemonInfo.svgImage?.uiImage else {
+            self.pokemonImageView.image = UIImage(named: "default")
+            return
+        }
+        image.withRenderingMode(.alwaysOriginal)
         self.pokemonImageView.contentMode = .scaleAspectFit
         self.pokemonImageView.image = image
         
