@@ -13,6 +13,7 @@ protocol HomeScrenViewModelPokemonCollectionViewProtocol {
     func viewDidLoadCollectionView()
     func rowSelected(index: Int)
     func returnPokemonsCount() -> Int
+    func getCurrentPokemonInfo(index: Int) -> PokemonInfo
 }
 
 extension HomeScreenViewModel: HomeScrenViewModelPokemonCollectionViewProtocol {
@@ -22,11 +23,13 @@ extension HomeScreenViewModel: HomeScrenViewModelPokemonCollectionViewProtocol {
     }
     
     func rowSelected(index: Int) {
-        self.view?.goToDetailPage(pokemonInfo: self.getPokemonInfo(index: index))
+        self.view?.goToDetailPage(pokemonInfo: self.getCurrentPokemonInfo(index: index))
     }
-    
     func returnPokemonsCount() -> Int {
         return getItemCount(array: pokemonsInfo)
+    }
+    func getCurrentPokemonInfo(index: Int) -> PokemonInfo {
+        return pokemonsInfo[index]
     }
 }
 

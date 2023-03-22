@@ -21,7 +21,6 @@ final class HomeScreen: UIViewController {
             return layout
         }()
     var viewModel: HomeScreenViewModelProtocol?
-    let service = PokemonService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +28,9 @@ final class HomeScreen: UIViewController {
         
         viewModel?.view = self
         viewModel?.viewDidLoad()
+        
+    }
+    fileprivate func configureNavigationController() {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.title = "Pokedex"
@@ -42,15 +44,15 @@ final class HomeScreen: UIViewController {
 extension HomeScreen: HomeScreenProtocol {
     
     func goToDetailPage(pokemonInfo: PokemonInfo) {
-        
         let vc = PokemonDetailScreen(pokemonInfo: pokemonInfo)
-        
         navigationController?.pushViewController(vc, animated: true)
     }
     
     func configureView() {
         view.backgroundColor = .white
+        configureNavigationController()
         addCollectionView()
+        
     }
 }
 

@@ -4,33 +4,34 @@
 //
 //  Created by Akın Çetin on 20.03.2023.
 //
-
 import Foundation
-
+import SVGKit
 
 protocol HomeScreenViewModelProtocol {
     
     var view: HomeScreenProtocol? {get set}
     func viewDidLoad()
 }
-protocol HomeScreenViewModelPrivateProtocol {
+protocol HomeViewModelPrivateProtocol {
     
     func downloadPokemons()
     func downloadPokemonsInfo()
     func downloadImageData()
+    func downloadPokemonColorInfo(index: Int)
     func getItemCount<T>(array: [T]) -> Int
     func getItemAtIndex<T>(array: [T], index: Int) -> T
+    func handleWithResult<T>(result: Result<T, Error>) -> T?
 }
-
 final class HomeScreenViewModel {
     
     weak var pokemonCollectionView: PokemonCollectionViewProtocol?
     weak var view: HomeScreenProtocol?
-    weak var cellView: PokemonCellProtocol?
-    let pokemonService = PokemonService()
-    
-    var pokemons: [Pokemon] = [Pokemon]()
+    private let pokemonService = PokemonService()
+    private var pokemons: [Pokemon] = [Pokemon]()
     var pokemonsInfo: [PokemonInfo] = [PokemonInfo]()
+    
+    private let group = DispatchGroup()
+    private let queue = DispatchQueue.global(qos: .userInitiated)
 }
 extension HomeScreenViewModel: HomeScreenViewModelProtocol {
     
@@ -39,7 +40,7 @@ extension HomeScreenViewModel: HomeScreenViewModelProtocol {
         self.view?.configureView()
     }
 }
-extension HomeScreenViewModel: HomeScreenViewModelPrivateProtocol {
+extension HomeScreenViewModel: HomeViewModelPrivateProtocol {
     func getItemCount<T>(array: [T]) -> Int {
         return array.count
     }
@@ -48,39 +49,27 @@ extension HomeScreenViewModel: HomeScreenViewModelPrivateProtocol {
         return array[index]
     }
     func downloadPokemons() {
-        pokemonService.fetchData(url: APIURLs.getAllPokemonUrl()) { (result: Result<PokemonResponse, Error>) in
-            switch result {
-            case.failure(let error):
-                print(error.localizedDescription)
-            case.success(let response):
-                guard let pokemons = response.results else {return}
-                self.pokemons.append(contentsOf: pokemons)
-                self.downloadPokemonsInfo()
-            }
+        pokemonService.fetchData(url: APIURLs.getAllPokemonUrl()) {[weak self] (result: Result<PokemonResponse, Error>) in
+            
+            guard let self = self , let pokemonsResponse = self.handleWithResult(result: result),
+            let pokemons = pokemonsResponse.results else {return}
+            self.pokemons.append(contentsOf: pokemons)
+            self.downloadPokemonsInfo()
         }
     }
     func downloadPokemonsInfo() {
 
-        let group = DispatchGroup()
         var results: [PokemonInfo] = []
-        let queue = DispatchQueue.global(qos: .userInitiated)
         pokemons.forEach { pokemon in
             guard let pokemonUrl = pokemon.url else {return}
             group.enter()
             queue.async {
-                self.pokemonService.fetchData(url: pokemonUrl) { (result: Result<PokemonInfo, Error>) in
-                    switch result {
-                    case.failure(let error):
-                        print(error.localizedDescription)
-                    case.success(let response):
-                        let pokemonInfo: PokemonInfo = response
-                        
-                        results.append(pokemonInfo)
-                    }
-                    group.leave()
+                self.pokemonService.fetchData(url: pokemonUrl) {[weak self] (result: Result<PokemonInfo, Error>) in
+                    guard let self = self,let pokemonInfo = self.handleWithResult(result: result) else {return}
+                    results.append(pokemonInfo)
+                    self.group.leave()
                 }
             }
-
         }
         group.notify(queue: .main) {
             results.sort {$0.id! < $1.id!}
@@ -89,24 +78,41 @@ extension HomeScreenViewModel: HomeScreenViewModelPrivateProtocol {
         }
     }
     func downloadImageData() {
-        let group = DispatchGroup()
+        
         for index in stride(from: 0, to: self.pokemons.count, by: 1) {
-            guard let url = pokemonsInfo[index].sprites?.other?.home?.frontDefault else {return}
+            self.downloadPokemonColorInfo(index: index)
+            guard let url = pokemonsInfo[index].sprites?.other?.dreamWorld?.frontDefault else {return}
             group.enter()
-            pokemonService.fetchImageData(url: url) { result in
+            pokemonService.fetchImageData(url: url) {[weak self] result in
                 
-                switch result {
-                case.failure(let error):
-                    print(error.localizedDescription)
-                case.success(let data):
-                    self.pokemonsInfo[index].image = data
-                }
-                group.leave()
+                guard let self = self , let data = self.handleWithResult(result: result) else {return}
+                let svgImage = SVGKImage(data: data)
+                self.pokemonsInfo[index].svgImage = svgImage
+                self.group.leave()
             }
         }
         group.notify(queue: .main) {
             self.pokemonCollectionView?.reloadTableView()
         }
     }
-    
+    func downloadPokemonColorInfo(index: Int) {
+        
+        guard let urlString = pokemonsInfo[index].species?.url else {return}
+        pokemonService.fetchData(url: urlString) {[weak self] (result: Result<PokemonSpecies, Error>) in
+            
+            guard let self = self , let pokemonSpecies = self.handleWithResult(result: result) else {return}
+            self.pokemonsInfo[index].pokemonSpecies = pokemonSpecies
+        }
+    }
+    @discardableResult
+    func handleWithResult<T>(result: Result<T, Error>) -> T?{
+        
+        switch result {
+        case.failure(let error):
+            print(error)
+        case.success(let value):
+            return value
+        }
+        return nil
+    }
 }

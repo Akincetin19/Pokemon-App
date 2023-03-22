@@ -56,8 +56,8 @@ extension PokemonCollectionView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! PokemonCollectionViewCell
-        
-        cell.configureCellViewModel(viewModel: self.viewModel as! PokemonCollectionViewModelCellProtocol, indexPath: indexPath.row)
+        guard let pokemonInfo = viewModel?.getCurrentPokemonInfo(index: indexPath.row) else {return PokemonCollectionViewCell()}
+        cell.configureCell(pokemonInfo: pokemonInfo)
         return cell
     }
 }

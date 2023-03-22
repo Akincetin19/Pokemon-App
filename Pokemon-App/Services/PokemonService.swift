@@ -30,7 +30,8 @@ final class PokemonService {
                 let decoder = JSONDecoder()
                 let object = try decoder.decode(T.self, from: data)
                 completion(.success(object))
-            } catch let error {
+            }
+            catch let error {
                 completion(.failure(error))
             }
             

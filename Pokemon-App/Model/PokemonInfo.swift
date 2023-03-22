@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SVGKit
 
 struct PokemonInfo: Codable {
     let abilities: [Ability]?
@@ -18,7 +19,8 @@ struct PokemonInfo: Codable {
     let sprites: Sprites?
     let weight: Int?
     var image: Data?
-    var polemonSpecies: PokemonSpecies?
+    var svgImage: SVGKImage?
+    var pokemonSpecies: PokemonSpecies?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -54,9 +56,18 @@ class Sprites: Codable {
     }
 }
 struct Other: Codable {
+    let dreamWorld: DreamWorld?
     let home: Home?
     enum CodingKeys: String, CodingKey {
         case home
+        case dreamWorld = "dream_world"
+    }
+}
+struct DreamWorld: Codable {
+    let frontDefault: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case frontDefault = "front_default"
     }
 }
 
